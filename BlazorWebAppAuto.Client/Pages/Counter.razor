@@ -1,5 +1,6 @@
 ﻿@page "/counter"
 @rendermode InteractiveAuto
+@inject IHttpClientFactory _httpClientFactory
 
 <PageTitle>Counter</PageTitle>
 
@@ -8,13 +9,28 @@
 <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="ApiCallTest">Click to Test API Calls and interaction</button>
 
+<h2>@result</h2>
 
 @code {
     private int currentCount = 0;
 
     private void IncrementCount()
     {
+        currentCount++;
+    }
+
+    string result = "nothing";
+    private async Task ApiCallTest()
+    {
+        HttpClient _HttpClientAnonymous = _httpClientFactory.CreateClient("TestAPI");
+        var response = await _HttpClientAnonymous.GetAsync("api/test");
+        if (response.IsSuccessStatusCode)
+        {
+            result = "Success at" + DateTime.Now;
+        }
+        else result = "fail at " + DateTime.Now;
         currentCount++;
     }
 }
